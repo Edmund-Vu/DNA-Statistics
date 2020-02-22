@@ -8,9 +8,9 @@ class dnaStats{
   private:
     string dnaString;
     int lineCount;
-    int nucleoCount;
     int sum;
     int nucleoTotal;
+    int squaredDiff;
     double mean;
     double variance;
     double stDev;
