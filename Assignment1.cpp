@@ -15,6 +15,10 @@ dnaStats::dnaStats(){
   double mean = 0.0;
   double variance = 0.0;
   double stDev = 0.0;
+  double probA = 0.0;
+  double probC = 0.0;
+  double probT = 0.0;
+  double probG = 0.0;
 }
 
 dnaStats::~dnaStats(){
@@ -82,20 +86,34 @@ void dnaStats::calcProb(ofstream& outputStream){
   double relProbGT = 0.0;
   double relProbGG = 0.0;
 
+  int bigramCount = 0;
+
   for(int i = 0; i < dnaString.size(); ++i){
     // First nucleotide A
     if(dnaString[i] == 'a' || dnaString[i] == 'A'){
       probA += 1;
       if(dnaString[i+1] == 'a' || dnaString[i] == 'A'){
+        if(relProbAA == 0){
+          bigramCount += 1;
+        }
         relProbAA += 1;
       }
       else if(dnaString[i+1] == 'c' || dnaString[i+1] == 'C'){
+        if(relProbAC == 0){
+          bigramCount += 1;
+        }
         relProbAC += 1;
       }
       else if(dnaString[i+1] == 't' || dnaString[i+1] == 'T'){
+        if(relProbAT == 0){
+          bigramCount += 1;
+        }
         relProbAT += 1;
       }
       else if(dnaString[i+1] == 'g' || dnaString[i+1] == 'G'){
+        if(relProbAG == 0){
+          bigramCount += 1;
+        }
         relProbAG += 1;
       }
     }
@@ -103,15 +121,27 @@ void dnaStats::calcProb(ofstream& outputStream){
     else if(dnaString[i] == 'c' || dnaString[i] == 'C'){
       probC += 1;
       if(dnaString[i+1] == 'a' || dnaString[i+1] == 'A'){
+        if(relProbCA == 0){
+          bigramCount += 1;
+        }
         relProbCA += 1;
       }
       else if(dnaString[i+1] == 'c' || dnaString[i+1] == 'C'){
+        if(relProbCC == 0){
+          bigramCount += 1;
+        }
         relProbCC += 1;
       }
       else if(dnaString[i+1] == 't' || dnaString[i+1] == 'T'){
+        if(relProbCT == 0){
+          bigramCount += 1;
+        }
         relProbCT += 1;
       }
       else if(dnaString[i+1] == 'g' || dnaString[i+1] == 'G'){
+        if(relProbCG == 0){
+          bigramCount += 1;
+        }
         relProbCG += 1;
       }
     }
@@ -119,15 +149,27 @@ void dnaStats::calcProb(ofstream& outputStream){
     else if(dnaString[i] == 't' || dnaString[i] == 'T'){
       probT += 1;
       if(dnaString[i+1] == 'a' || dnaString[i+1] == 'A'){
+        if(relProbTA == 0){
+          bigramCount += 1;
+        }
         relProbTA += 1;
       }
       else if(dnaString[i+1] == 'c' || dnaString[i+1] == 'C'){
+        if(relProbTC == 0){
+          bigramCount += 1;
+        }
         relProbTC += 1;
       }
       else if(dnaString[i+1] == 't' || dnaString[i+1] == 'T'){
+        if(relProbTT == 0){
+          bigramCount += 1;
+        }
         relProbTT += 1;
       }
       else if(dnaString[i+1] == 'g' || dnaString[i+1] == 'G'){
+        if(relProbTG == 0){
+          bigramCount += 1;
+        }
         relProbTG += 1;
       }
     }
@@ -135,15 +177,27 @@ void dnaStats::calcProb(ofstream& outputStream){
     else if(dnaString[i] == 'g' || dnaString[i] == 'G'){
       probG += 1;
       if(dnaString[i+1] == 'a' || dnaString[i+1] == 'A'){
+        if(relProbGA == 0){
+          bigramCount += 1;
+        }
         relProbGA += 1;
       }
       else if(dnaString[i+1] == 'c' || dnaString[i+1] == 'C'){
+        if(relProbGC == 0){
+          bigramCount += 1;
+        }
         relProbGC += 1;
       }
       else if(dnaString[i+1] == 't' || dnaString[i+1] == 'T'){
+        if(relProbGT == 0){
+          bigramCount += 1;
+        }
         relProbGT += 1;
       }
       else if(dnaString[i+1] == 'g' || dnaString[i+1] == 'G'){
+        if(relProbGG == 0){
+          bigramCount += 1;
+        }
         relProbGG += 1;
       }
     }
@@ -156,25 +210,25 @@ void dnaStats::calcProb(ofstream& outputStream){
 
   outputStream << "The relative probability of each bigram is as follows: " << endl;
 
-  outputStream << "AA: " << relProbAA/nucleoTotal << endl;
-  outputStream << "AC: " << relProbAC/nucleoTotal << endl;
-  outputStream << "AT: " << relProbAT/nucleoTotal << endl;
-  outputStream << "AG: " << relProbAG/nucleoTotal << endl;
+  outputStream << "AA: " << relProbAA/bigramCount << endl;
+  outputStream << "AC: " << relProbAC/bigramCount << endl;
+  outputStream << "AT: " << relProbAT/bigramCount << endl;
+  outputStream << "AG: " << relProbAG/bigramCount << endl;
 
-  outputStream << "CA: " << relProbCA/nucleoTotal << endl;
-  outputStream << "CC: " << relProbCC/nucleoTotal << endl;
-  outputStream << "CT: " << relProbCT/nucleoTotal << endl;
-  outputStream << "CG: " << relProbCG/nucleoTotal << endl;
+  outputStream << "CA: " << relProbCA/bigramCount << endl;
+  outputStream << "CC: " << relProbCC/bigramCount << endl;
+  outputStream << "CT: " << relProbCT/bigramCount << endl;
+  outputStream << "CG: " << relProbCG/bigramCount << endl;
 
-  outputStream << "TA: " << relProbTA/nucleoTotal << endl;
-  outputStream << "TC: " << relProbTA/nucleoTotal << endl;
-  outputStream << "TT: " << relProbTT/nucleoTotal << endl;
-  outputStream << "TG: " << relProbTG/nucleoTotal << endl;
+  outputStream << "TA: " << relProbTA/bigramCount << endl;
+  outputStream << "TC: " << relProbTA/bigramCount << endl;
+  outputStream << "TT: " << relProbTT/bigramCount << endl;
+  outputStream << "TG: " << relProbTG/bigramCount << endl;
 
-  outputStream << "GA: " << relProbGA/nucleoTotal << endl;
-  outputStream << "GC: " << relProbGC/nucleoTotal << endl;
-  outputStream << "GT: " << relProbGT/nucleoTotal << endl;
-  outputStream << "GG: " << relProbGG/nucleoTotal << endl;
+  outputStream << "GA: " << relProbGA/bigramCount << endl;
+  outputStream << "GC: " << relProbGC/bigramCount << endl;
+  outputStream << "GT: " << relProbGT/bigramCount << endl;
+  outputStream << "GG: " << relProbGG/bigramCount << endl;
 
 }
 
