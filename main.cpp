@@ -33,6 +33,20 @@ int main(int argc, char** argv){
     a.calcProb(out);
 
     in.close();
+
+    string userInput;
+    cout << "Would you like to input another file? (Y/N)" << endl;
+    cin >> userInput;
+
+    if(userInput == "n" || userInput == "N"){
+      out.close();
+      return 0;
+    } else if(userInput == "y" || userInput == "Y"){
+      break;
+    } else{
+      cout << "That is not a valid input." << endl;
+      cout << "Please enter only the letter Y for yes, or N for no." << endl;
+    }
   }
   return 0;
 }
