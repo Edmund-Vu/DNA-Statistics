@@ -38,7 +38,7 @@ void dnaStats::readFromFile(ifstream& inputStream){
 }
 
 void dnaStats::calcStats(ofstream& outputStream){
-  int countLine = 0;; // tracks the number of lines read
+  int countLine = 0; // tracks the number of lines read
 
   for(int i = 0; i < dnaString.size(); ++i){
     if(dnaString[i] != '\n'){
@@ -203,10 +203,12 @@ void dnaStats::calcProb(ofstream& outputStream){
     }
   }
 
-  probA = probA/nucleoTotal;
-  probC = probC/nucleoTotal;
-  probT = probT/nucleoTotal;
-  probG = probG/nucleoTotal;
+  outputStream << "The relative probability of each nucleotide is as follows: " << endl;
+
+  outputStream << "A: " << probA/nucleoTotal << endl;
+  outputStream << "C: " << probC/nucleoTotal << endl;
+  outputStream << "T: " << probT/nucleoTotal << endl;
+  outputStream << "G: " << probG/nucleoTotal << endl;
 
   outputStream << "The relative probability of each bigram is as follows: " << endl;
 
