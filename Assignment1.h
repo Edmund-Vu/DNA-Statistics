@@ -14,16 +14,12 @@ class dnaStats{
     double mean;
     double variance;
     double stDev;
-    double relProbA;
-    double relProbC;
-    double relProbT;
-    double relProbG;
   public:
     dnaStats();
     ~dnaStats();
 
-    void readFromFile(string input);
-    void calcStats();
-    void calcProb();
-    void gaussDist();
+    void readFromFile(ifstream& inputStream);
+    void calcStats(ofstream& outputStream);
+    void calcProb(ofstream& outputStream);
+    void gaussDist(ofstream& outStream);
 };

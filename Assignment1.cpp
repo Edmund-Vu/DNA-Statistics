@@ -21,23 +21,19 @@ dnaStats::~dnaStats(){
 
 }
 
-void readFromFile(string input){
+void dnaStats::readFromFile(ifstream& inputStream){
   int lineCount = 0;
-  string dnaString = "";
-  ifstream inFile;
-  inFile.open(input);
   char c;
-
-  while(!inFile.eof()){
+  while(!inputStream.eof()){
     if(c == '\n'){ //checks whether the read character is a newline
       lineCount++; //tracks total new lines in the file
     }
-    inFile.get(c);
+    inputStream.get(c);
     dnaString += c;
   }
 }
 
-void dnaStats::calcStats(){
+void dnaStats::calcStats(ofstream& outputStream){
   int countLine = 0;; // tracks the number of lines read
 
   for(int i = 0; i < dnaString.size(); ++i){
@@ -54,13 +50,18 @@ void dnaStats::calcStats(){
       }
     }
   }
-  cout << "The sum of the length of the DNA strings is: " << sum << endl;
-  cout << "The mean of the length of the DNA strings is: " << mean << endl;
-  cout << "The variance of the length of the DNA strings is; " << variance << endl;
-  cout << "The standard deviation of the length of the DNA strings is: " << stDev << endl;
+  outputStream << "The sum of the length of the DNA strings is: " << sum << endl;
+  outputStream << "The mean of the length of the DNA strings is: " << mean << endl;
+  outputStream << "The variance of the length of the DNA strings is; " << variance << endl;
+  outputStream << "The standard deviation of the length of the DNA strings is: " << stDev << endl;
 }
 
-void calcProb(){
+void dnaStats::calcProb(ofstream& outputStream){
+  double probA = 0.0;
+  double probC = 0.0;
+  double probT = 0.0;
+  double probG = 0.0;
+
   double relProbAA = 0.0;
   double relProbAC = 0.0;
   double relProbAT = 0.0;
@@ -84,6 +85,7 @@ void calcProb(){
   for(int i = 0; i < dnaString.size(); ++i){
     // First nucleotide A
     if(dnaString[i] == 'a' || dnaString[i] == 'A'){
+      probA += 1;
       if(dnaString[i+1] == 'a' || dnaString[i] == 'A'){
         relProbAA += 1;
       }
@@ -99,6 +101,7 @@ void calcProb(){
     }
     // First nucleotide C
     else if(dnaString[i] == 'c' || dnaString[i] == 'C'){
+      probC += 1;
       if(dnaString[i+1] == 'a' || dnaString[i+1] == 'A'){
         relProbCA += 1;
       }
@@ -114,6 +117,7 @@ void calcProb(){
     }
     // First nucleotide T
     else if(dnaString[i] == 't' || dnaString[i] == 'T'){
+      probT += 1;
       if(dnaString[i+1] == 'a' || dnaString[i+1] == 'A'){
         relProbTA += 1;
       }
@@ -129,6 +133,7 @@ void calcProb(){
     }
     //First nucleotide G
     else if(dnaString[i] == 'g' || dnaString[i] == 'G'){
+      probG += 1;
       if(dnaString[i+1] == 'a' || dnaString[i+1] == 'A'){
         relProbGA += 1;
       }
@@ -143,25 +148,55 @@ void calcProb(){
       }
     }
   }
-  cout << "The relative probability of each bigram is as follows: " << endl;
 
-  cout << "AA: " << relProbAA/nucleoTotal << endl;
-  cout << "AC: " << relProbAC/nucleoTotal << endl;
-  cout << "AT: " << relProbAT/nucleoTotal << endl;
-  cout << "AG: " << relProbAG/nucleoTotal << endl;
+  probA = probA/nucleoTotal;
+  probC = probC/nucleoTotal;
+  probT = probT/nucleoTotal;
+  probG = probG/nucleoTotal;
 
-  cout << "CA: " << relProbCA/nucleoTotal << endl;
-  cout << "CC: " << relProbCC/nucleoTotal << endl;
-  cout << "CT: " << relProbCT/nucleoTotal << endl;
-  cout << "CG: " << relProbCG/nucleoTotal << endl;
+  outputStream << "The relative probability of each bigram is as follows: " << endl;
 
-  cout << "TA: " << relProbTA/nucleoTotal << endl;
-  cout << "TC: " << relProbTA/nucleoTotal << endl;
-  cout << "TT: " << relProbTT/nucleoTotal << endl;
-  cout << "TG: " << relProbTG/nucleoTotal << endl;
+  outputStream << "AA: " << relProbAA/nucleoTotal << endl;
+  outputStream << "AC: " << relProbAC/nucleoTotal << endl;
+  outputStream << "AT: " << relProbAT/nucleoTotal << endl;
+  outputStream << "AG: " << relProbAG/nucleoTotal << endl;
 
-  cout << "GA: " << relProbGA/nucleoTotal << endl;
-  cout << "GC: " << relProbGC/nucleoTotal << endl;
-  cout << "GT: " << relProbGT/nucleoTotal << endl;
-  cout << "GG: " << relProbGG/nucleoTotal << endl;
+  outputStream << "CA: " << relProbCA/nucleoTotal << endl;
+  outputStream << "CC: " << relProbCC/nucleoTotal << endl;
+  outputStream << "CT: " << relProbCT/nucleoTotal << endl;
+  outputStream << "CG: " << relProbCG/nucleoTotal << endl;
+
+  outputStream << "TA: " << relProbTA/nucleoTotal << endl;
+  outputStream << "TC: " << relProbTA/nucleoTotal << endl;
+  outputStream << "TT: " << relProbTT/nucleoTotal << endl;
+  outputStream << "TG: " << relProbTG/nucleoTotal << endl;
+
+  outputStream << "GA: " << relProbGA/nucleoTotal << endl;
+  outputStream << "GC: " << relProbGC/nucleoTotal << endl;
+  outputStream << "GT: " << relProbGT/nucleoTotal << endl;
+  outputStream << "GG: " << relProbGG/nucleoTotal << endl;
+
+}
+
+void dnaStats::gaussDist(ofstream& outputStream){
+  double a = (double) rand() / (RAND_MAX);
+  double b = (double) rand() / (RAND_MAX);
+  double C = sqrt((-2*log(a)) * (cos(2*(M_PI)*b)));
+  double D = (stDev*C) + mean;
+
+  for(int i = 0; i < 1000; ++i){
+    for(int j = 0; j < D; ++j){
+      double rangeOfProb = rand() % 100;
+      if(rangeOfProb <= probA){
+        outputStream << "A";
+      } else if(rangeOfProb <= probA + probC){
+        outputStream << "C";
+      } else if(rangeOfProb <= probA + probC + probT){
+        outputStream << "T";
+      } else{
+        outputStream << "G";
+      }
+    }
+    outputStream << "\n";
+  }
 }
