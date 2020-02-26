@@ -26,12 +26,14 @@ int main(int argc, char** argv){
 
     in.open(filepath.c_str());
 
-    dnaStats a;
+    dnaStats *dna = new dnaStats;
 
-    a.readFromFile(in);
-    a.calcStats(out);
-    a.calcProb(out);
-
+    dna -> readFromFile(in);
+    dna -> calcSumAndMean(out);
+    dna -> calcVarAndDev(out);
+    dna -> calcProb(out);
+    dna -> gaussDist(out);
+    delete dna;
     in.close();
 
     string userInput;
