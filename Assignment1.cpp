@@ -7,26 +7,14 @@
 using namespace std;
 
 dnaStats::dnaStats(){
-  string dnaString;
-  int lineCount;
-  int sum = 0;
-  int nucleoTotal = 0;
-  int squaredDiff = 0;
-  double mean = 0.0;
-  double variance = 0.0;
-  double stDev = 0.0;
-  double probA = 0.0;
-  double probC = 0.0;
-  double probT = 0.0;
-  double probG = 0.0;
+
 }
 
 dnaStats::~dnaStats(){
-
+  cout << "The analysis of this file has finished." << endl;
 }
 
 void dnaStats::readFromFile(ifstream& inputStream){
-  int lineCount = 0;
   char c;
   while(!inputStream.eof()){
     if(c == '\n'){ //checks whether the read character is a newline
@@ -37,178 +25,171 @@ void dnaStats::readFromFile(ifstream& inputStream){
   }
 }
 
-void dnaStats::calcStats(ofstream& outputStream){
-  int countLine = 0; // tracks the number of lines read
-
+void dnaStats::calcSumAndMean(ofstream& outputStream){
   for(int i = 0; i < dnaString.size(); ++i){
     if(dnaString[i] != '\n'){
-      nucleoTotal++;
+      nucleoTotal += 1;
     } else{
-      countLine++;
-      squaredDiff += pow((nucleoTotal - mean), 2);
-      if(countLine == lineCount){
-        sum = nucleoTotal;
-        mean = sum / lineCount;
-        variance = squaredDiff - nucleoTotal;
-        stDev = sqrt(variance);
-      }
+      countLine += 1;
     }
   }
+  sum = nucleoTotal;
+  mean = nucleoTotal / countLine;
   outputStream << "The sum of the length of the DNA strings is: " << sum << endl;
   outputStream << "The mean of the length of the DNA strings is: " << mean << endl;
-  outputStream << "The variance of the length of the DNA strings is; " << variance << endl;
+}
+
+void dnaStats::calcVarAndDev(ofstream& outputStream){
+  double countLine = -1;
+  for(int i = 0; i < dnaString.size(); ++i){
+    if(dnaString[i] != '\n'){
+      nucleoCount += 1;
+    } else{
+      countLine += 1;
+      squaredDiff += pow((nucleoCount - mean), 2);
+      nucleoCount = 0;
+    }
+  }
+  squaredDiff = squaredDiff - pow((mean), 2);
+  variance = squaredDiff / countLine;
+  stDev = sqrt(variance);
+
+  outputStream << "The variance of the length of the DNA strings is: " << variance << endl;
   outputStream << "The standard deviation of the length of the DNA strings is: " << stDev << endl;
 }
 
 void dnaStats::calcProb(ofstream& outputStream){
-  double probA = 0.0;
-  double probC = 0.0;
-  double probT = 0.0;
-  double probG = 0.0;
+  double nucleoTotal = 0.0;
+  string nucleoString = "";
+  for(int j = 0; j < dnaString.size(); ++j){
+    if(dnaString[j] != '\n'){
+      nucleoTotal += 1;
+      nucleoString += dnaString[j];
+    }
+  }
 
-  double relProbAA = 0.0;
-  double relProbAC = 0.0;
-  double relProbAT = 0.0;
-  double relProbAG = 0.0;
-
-  double relProbCA = 0.0;
-  double relProbCC = 0.0;
-  double relProbCT = 0.0;
-  double relProbCG = 0.0;
-
-  double relProbTA = 0.0;
-  double relProbTC = 0.0;
-  double relProbTT = 0.0;
-  double relProbTG = 0.0;
-
-  double relProbGA = 0.0;
-  double relProbGC = 0.0;
-  double relProbGT = 0.0;
-  double relProbGG = 0.0;
-
-  int bigramCount = 0;
-
-  for(int i = 0; i < dnaString.size(); ++i){
+  for(int i = 0; i < nucleoString.size(); ++i){
     // First nucleotide A
-    if(dnaString[i] == 'a' || dnaString[i] == 'A'){
+    if(nucleoString[i] == 'a' || nucleoString[i] == 'A'){
       probA += 1;
-      if(dnaString[i+1] == 'a' || dnaString[i] == 'A'){
-        if(relProbAA == 0){
-          bigramCount += 1;
+      if(i % 2 == 0){
+        if(nucleoString[i+1] == 'a' || nucleoString[i+1] == 'A'){
+          relProbAA += 1;
+          if(relProbAA == 1){
+            bigramCount += 1;
+          }
+        } else if(nucleoString[i+1] == 'c' || nucleoString[i+1] == 'C'){
+          relProbAC += 1;
+          if(relProbAC == 1){
+            bigramCount += 1;
+          }
+        } else if(nucleoString[i+1] == 't' || nucleoString[i+1] == 'T'){
+          relProbAT += 1;
+          if(relProbAT == 1){
+            bigramCount += 1;
+          }
+        } else if(nucleoString[i+1] == 'g' || nucleoString[i+1] == 'G'){
+          relProbAG += 1;
+          if(relProbAG == 1){
+            bigramCount += 1;
+          }
         }
-        relProbAA += 1;
       }
-      else if(dnaString[i+1] == 'c' || dnaString[i+1] == 'C'){
-        if(relProbAC == 0){
-          bigramCount += 1;
-        }
-        relProbAC += 1;
-      }
-      else if(dnaString[i+1] == 't' || dnaString[i+1] == 'T'){
-        if(relProbAT == 0){
-          bigramCount += 1;
-        }
-        relProbAT += 1;
-      }
-      else if(dnaString[i+1] == 'g' || dnaString[i+1] == 'G'){
-        if(relProbAG == 0){
-          bigramCount += 1;
-        }
-        relProbAG += 1;
-      }
-    }
-    // First nucleotide C
-    else if(dnaString[i] == 'c' || dnaString[i] == 'C'){
+
+      // First nucleotide C
+    } else if(nucleoString[i] == 'c' || nucleoString[i] == 'C'){
       probC += 1;
-      if(dnaString[i+1] == 'a' || dnaString[i+1] == 'A'){
-        if(relProbCA == 0){
-          bigramCount += 1;
+      if(i % 2 == 0){
+        if(nucleoString[i+1] == 'a' || nucleoString[i+1] == 'A'){
+          relProbCA += 1;
+          if(relProbCA == 1){
+            bigramCount += 1;
+          }
+        } else if(nucleoString[i+1] == 'c' || nucleoString[i+1] == 'C'){
+          relProbCC += 1;
+          if(relProbCC == 1){
+            bigramCount += 1;
+          }
+        } else if(nucleoString[i+1] == 't' || nucleoString[i+1] == 'T'){
+          relProbCT += 1;
+          if(relProbCT == 1){
+            bigramCount += 1;
+          }
+        } else if(nucleoString[i+1] == 'g' || nucleoString[i+1] == 'G'){
+          relProbCG += 1;
+          if(relProbCG == 1){
+            bigramCount += 1;
+          }
         }
-        relProbCA += 1;
       }
-      else if(dnaString[i+1] == 'c' || dnaString[i+1] == 'C'){
-        if(relProbCC == 0){
-          bigramCount += 1;
-        }
-        relProbCC += 1;
-      }
-      else if(dnaString[i+1] == 't' || dnaString[i+1] == 'T'){
-        if(relProbCT == 0){
-          bigramCount += 1;
-        }
-        relProbCT += 1;
-      }
-      else if(dnaString[i+1] == 'g' || dnaString[i+1] == 'G'){
-        if(relProbCG == 0){
-          bigramCount += 1;
-        }
-        relProbCG += 1;
-      }
-    }
-    // First nucleotide T
-    else if(dnaString[i] == 't' || dnaString[i] == 'T'){
+
+      // First nucleotide T
+    } else if(nucleoString[i] == 't' || nucleoString[i] == 'T'){
       probT += 1;
-      if(dnaString[i+1] == 'a' || dnaString[i+1] == 'A'){
-        if(relProbTA == 0){
-          bigramCount += 1;
+      if(i % 2 == 0){
+        if(nucleoString[i+1] == 'a' || nucleoString[i+1] == 'A'){
+          relProbTA += 1;
+          if(relProbTA == 1){
+            bigramCount += 1;
+          }
+        } else if(nucleoString[i] == 'c' || nucleoString[i+1] == 'C'){
+          relProbTC += 1;
+          if(relProbTC == 1){
+            bigramCount += 1;
+          }
+        } else if(nucleoString[i] == 't' || nucleoString[i+1] == 'T'){
+          relProbTT += 1;
+          if(relProbTT == 1){
+            bigramCount += 1;
+          }
+        } else if(nucleoString[i] == 'g' || nucleoString[i+1] == 'G'){
+          relProbTG += 1;
+          if(relProbTG == 1){
+            bigramCount += 1;
+          }
         }
-        relProbTA += 1;
       }
-      else if(dnaString[i+1] == 'c' || dnaString[i+1] == 'C'){
-        if(relProbTC == 0){
-          bigramCount += 1;
-        }
-        relProbTC += 1;
-      }
-      else if(dnaString[i+1] == 't' || dnaString[i+1] == 'T'){
-        if(relProbTT == 0){
-          bigramCount += 1;
-        }
-        relProbTT += 1;
-      }
-      else if(dnaString[i+1] == 'g' || dnaString[i+1] == 'G'){
-        if(relProbTG == 0){
-          bigramCount += 1;
-        }
-        relProbTG += 1;
-      }
-    }
-    //First nucleotide G
-    else if(dnaString[i] == 'g' || dnaString[i] == 'G'){
+
+      // First nucleotide G
+    } else if(nucleoString[i] == 'g' || nucleoString[i] == 'G'){
       probG += 1;
-      if(dnaString[i+1] == 'a' || dnaString[i+1] == 'A'){
-        if(relProbGA == 0){
-          bigramCount += 1;
+      if(i % 2 == 0){
+        if(nucleoString[i] == 'a' || nucleoString[i+1] == 'A'){
+          relProbGA += 1;
+          if(relProbGA == 1){
+            bigramCount += 1;
+          }
+        }else if(nucleoString[i] == 'c' || nucleoString[i+1] == 'C'){
+          relProbGC += 1;
+          if(relProbGC == 1){
+            bigramCount += 1;
+          }
+        } else if(nucleoString[i] == 't' || nucleoString[i+1] == 'T'){
+          relProbGT += 1;
+          if(relProbGT == 1){
+            bigramCount += 1;
+          }
+        } else if(nucleoString[i] == 'g' || nucleoString[i+1] == 'G'){
+          relProbGG += 1;
+          if(relProbGG == 1){
+            bigramCount += 1;
+          }
         }
-        relProbGA += 1;
-      }
-      else if(dnaString[i+1] == 'c' || dnaString[i+1] == 'C'){
-        if(relProbGC == 0){
-          bigramCount += 1;
-        }
-        relProbGC += 1;
-      }
-      else if(dnaString[i+1] == 't' || dnaString[i+1] == 'T'){
-        if(relProbGT == 0){
-          bigramCount += 1;
-        }
-        relProbGT += 1;
-      }
-      else if(dnaString[i+1] == 'g' || dnaString[i+1] == 'G'){
-        if(relProbGG == 0){
-          bigramCount += 1;
-        }
-        relProbGG += 1;
       }
     }
   }
 
-  outputStream << "The relative probability of each nucleotide is as follows: " << endl;
+  probA = probA/nucleoTotal;
+  probC = probC/nucleoTotal;
+  probT = probT/nucleoTotal;
+  probG = probG/nucleoTotal;
 
-  outputStream << "A: " << probA/nucleoTotal << endl;
-  outputStream << "C: " << probC/nucleoTotal << endl;
-  outputStream << "T: " << probT/nucleoTotal << endl;
-  outputStream << "G: " << probG/nucleoTotal << endl;
+  outputStream << "The probability of each nucleotide is as follows: " << endl;
+
+  outputStream << "A: " << probA << endl;
+  outputStream << "C: " << probC << endl;
+  outputStream << "T: " << probT << endl;
+  outputStream << "G: " << probG << endl;
 
   outputStream << "The relative probability of each bigram is as follows: " << endl;
 
@@ -223,7 +204,7 @@ void dnaStats::calcProb(ofstream& outputStream){
   outputStream << "CG: " << relProbCG/bigramCount << endl;
 
   outputStream << "TA: " << relProbTA/bigramCount << endl;
-  outputStream << "TC: " << relProbTA/bigramCount << endl;
+  outputStream << "TC: " << relProbTC/bigramCount << endl;
   outputStream << "TT: " << relProbTT/bigramCount << endl;
   outputStream << "TG: " << relProbTG/bigramCount << endl;
 
@@ -235,14 +216,14 @@ void dnaStats::calcProb(ofstream& outputStream){
 }
 
 void dnaStats::gaussDist(ofstream& outputStream){
-  double a = (double) rand() / (RAND_MAX);
-  double b = (double) rand() / (RAND_MAX);
-  double C = sqrt((-2*log(a)) * (cos(2*(M_PI)*b)));
-  double D = (stDev*C) + mean;
-
   for(int i = 0; i < 1000; ++i){
+    float a = ((float) rand() / (RAND_MAX));
+    float b = ((float) rand() / (RAND_MAX));
+    float C = (sqrt(-2*log(a))) * (cos(2*M_PI*b));
+    float D = (stDev*C) + mean;
+
     for(int j = 0; j < D; ++j){
-      double rangeOfProb = rand() % 100;
+      float rangeOfProb = ((float) rand() / (RAND_MAX));
       if(rangeOfProb <= probA){
         outputStream << "A";
       } else if(rangeOfProb <= probA + probC){
