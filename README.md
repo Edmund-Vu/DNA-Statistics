@@ -20,7 +20,7 @@ Header guards
 Ben Kahn, Cameron Irving - Helped with debugging
 
 Instructions:
--Compile with 'g++ *main.cpp
--Run ./a.out
+-Compile with 'g++ *main.cpp -o DNA_Stats
+-Run ./DNA-Stats
 -Enter the filepath for the txt file with the DNA sequences
--Follow the prompts, and view the 'EdmundVu.out' file for the output. 
+-Follow the prompts, and view the 'EdmundVu.out' file for the output.
